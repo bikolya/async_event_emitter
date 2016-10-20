@@ -31,7 +31,7 @@ class AsyncEventEmitter
     events[event.to_sym] << {
       subscriber: subscriber,
       method: options.fetch(:method, event),
-      async: options.fetch(:async, false)
+      async: options.fetch(:async, true)
     }
   end
 

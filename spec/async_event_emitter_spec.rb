@@ -19,7 +19,7 @@ describe AsyncEventEmitter do
           some_event: [{
             subscriber: subscriber,
             method: event,
-            async: false
+            async: true
           }]
         })
       end
@@ -36,15 +36,15 @@ describe AsyncEventEmitter do
           some_event: [{
             subscriber: subscriber,
             method: :another_method,
-            async: false
+            async: true
           }]
         })
       end
     end
 
-    context 'when subscriber wants to receive messages asynchronously' do
+    context 'when subscriber wants to receive messages synchronously' do
       let(:options) do
-        { async: true }
+        { async: false }
       end
 
       it 'adds new subscriber for events collection' do
@@ -53,7 +53,7 @@ describe AsyncEventEmitter do
           some_event: [{
             subscriber: subscriber,
             method: event,
-            async: true
+            async: false
           }]
         })
       end
@@ -71,9 +71,14 @@ describe AsyncEventEmitter do
     let(:subscriber_custom_method) { double(:subscriber_custom_method) }
 
     before do
-      described_class.observe(event, subscriber)
-      described_class.observe(event, subscriber_async, async: true)
-      described_class.observe(event, subscriber_custom_method, method: :another_method)
+      described_class.observe(event, subscriber, async: false)
+      described_class.observe(event, subscriber_async)
+      described_class.observe(
+        event,
+        subscriber_custom_method,
+        method: :another_method,
+        async: false
+      )
     end
 
     it 'notifies subscribers' do
