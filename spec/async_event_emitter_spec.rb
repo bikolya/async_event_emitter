@@ -18,7 +18,8 @@ describe AsyncEventEmitter do
         expect(described_class.events).to eq({
           some_event: [{
             subscriber: subscriber,
-            method: event
+            method: event,
+            async: false
           }]
         })
       end
@@ -34,7 +35,25 @@ describe AsyncEventEmitter do
         expect(described_class.events).to eq({
           some_event: [{
             subscriber: subscriber,
-            method: :another_method
+            method: :another_method,
+            async: false
+          }]
+        })
+      end
+    end
+
+    context 'when subscriber wants to receive messages asynchronously' do
+      let(:options) do
+        { async: true }
+      end
+
+      it 'adds new subscriber for events collection' do
+        subject
+        expect(described_class.events).to eq({
+          some_event: [{
+            subscriber: subscriber,
+            method: event,
+            async: true
           }]
         })
       end
@@ -48,15 +67,18 @@ describe AsyncEventEmitter do
       { order_id: 1 }
     end
     let(:subscriber) { double(:subscriber) }
+    let(:subscriber_async) { double(:subscriber_async) }
     let(:subscriber_custom_method) { double(:subscriber_custom_method) }
 
     before do
       described_class.observe(event, subscriber)
+      described_class.observe(event, subscriber_async, async: true)
       described_class.observe(event, subscriber_custom_method, method: :another_method)
     end
 
     it 'notifies subscribers' do
       expect(subscriber).to receive(:some_event).with(data)
+      expect(subscriber_async).to receive_message_chain('delay.some_event').with(data)
       expect(subscriber_custom_method).to receive(:another_method).with(data)
       subject
     end

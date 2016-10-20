@@ -19,14 +19,19 @@ class AsyncEventEmitter
 
   def notify(event, data = {})
     events[event.to_sym].each do |subscriber:, **options|
-      subscriber.public_send(options[:method], data)
+      if options[:async]
+        subscriber.delay.public_send(options[:method], data)
+      else
+        subscriber.public_send(options[:method], data)
+      end
     end
   end
 
   def observe(event, subscriber, **options)
     events[event.to_sym] << {
       subscriber: subscriber,
-      method: options.fetch(:method, event)
+      method: options.fetch(:method, event),
+      async: options.fetch(:async, false)
     }
   end
 
