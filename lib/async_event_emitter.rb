@@ -18,13 +18,16 @@ class AsyncEventEmitter
   end
 
   def notify(event, data = {})
-    events[event.to_sym].each do |subscriber:|
-      subscriber.public_send(event, data)
+    events[event.to_sym].each do |subscriber:, **options|
+      subscriber.public_send(options[:method], data)
     end
   end
 
-  def observe(event, subscriber)
-    events[event.to_sym] << { subscriber: subscriber }
+  def observe(event, subscriber, **options)
+    events[event.to_sym] << {
+      subscriber: subscriber,
+      method: options.fetch(:method, event)
+    }
   end
 
   def reset

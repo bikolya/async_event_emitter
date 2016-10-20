@@ -6,15 +6,36 @@ describe AsyncEventEmitter do
   end
 
   describe '#observe' do
-    subject { described_class.observe(event, subscriber) }
+    subject { described_class.observe(event, subscriber, options) }
     let(:event) { :some_event }
     let(:subscriber) { double(:subscriber) }
 
     context 'when there are no custom options' do
+      let(:options) { Hash.new }
+
       it 'adds new subscriber for events collection' do
         subject
         expect(described_class.events).to eq({
-          some_event: [{ subscriber: subscriber }]
+          some_event: [{
+            subscriber: subscriber,
+            method: event
+          }]
+        })
+      end
+    end
+
+    context 'when subscriber specifies another message to receive' do
+      let(:options) do
+        { method: :another_method }
+      end
+
+      it 'adds new subscriber for events collection' do
+        subject
+        expect(described_class.events).to eq({
+          some_event: [{
+            subscriber: subscriber,
+            method: :another_method
+          }]
         })
       end
     end
@@ -27,13 +48,16 @@ describe AsyncEventEmitter do
       { order_id: 1 }
     end
     let(:subscriber) { double(:subscriber) }
+    let(:subscriber_custom_method) { double(:subscriber_custom_method) }
 
     before do
       described_class.observe(event, subscriber)
+      described_class.observe(event, subscriber_custom_method, method: :another_method)
     end
 
     it 'notifies subscribers' do
       expect(subscriber).to receive(:some_event).with(data)
+      expect(subscriber_custom_method).to receive(:another_method).with(data)
       subject
     end
   end
