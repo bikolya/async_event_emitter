@@ -9,24 +9,12 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Nikolay Bienko"]
   spec.email         = ["bikolya@gmail.com"]
 
-  spec.summary       = %q{Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = %q{EventEmitter allows to asynchronously notify subscribers about events}
+  spec.description   = %q{With EventEmitter you can build your application in Event-Driven way. It acts as global pub/sub mechanism and uses Sidekiq to reliably and asynchronously deliver messages to subscribers. Using this approach you can enforce low coupling between different components of the system.}
+  spec.homepage      = "https://github.com/bikolya/async_event_emitter"
   spec.license       = "MIT"
 
-  # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
-  # to allow pushing to a single host or delete this section to allow pushing to any host.
-  if spec.respond_to?(:metadata)
-    spec.metadata['allowed_push_host'] = "TODO: Set to 'http://mygemserver.com'"
-  else
-    raise "RubyGems 2.0 or newer is required to protect against " \
-      "public gem pushes."
-  end
-
-  spec.files         = `git ls-files -z`.split("\x0").reject do |f|
-    f.match(%r{^(test|spec|features)/})
-  end
-  spec.bindir        = "exe"
+  spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(spec)/}) }
   spec.require_paths = ["lib"]
 
   spec.add_dependency "sidekiq", ">= 3", "< 5"
