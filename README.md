@@ -22,7 +22,10 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+EventEmitter.observe(:order_created, NotificationsService)
+EventEmitter.notify(:order_created, order_id: 123)
+```
 
 ## Development
 
@@ -32,7 +35,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/async_event_emitter.
+Bug reports and pull requests are welcome on GitHub at https://github.com/bikolya/async_event_emitter.
 
 
 ## License
